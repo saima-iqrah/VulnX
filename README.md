@@ -285,10 +285,6 @@ Potential future enhancements include:
 
 VulnX is intended for authorized security assessment and educational purposes. Users are responsible for ensuring that they have permission to assess any submitted website. The platform's results should be treated as indicators of potential security issues, not as a guarantee that a website is secure or insecure.
 
-## License
-
-No license is specified here. Add a `LICENSE` file and update this section if you intend to distribute the project under a particular open-source license.
-
 ## Author
 
 **Saima Kawsar**
