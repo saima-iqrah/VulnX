@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+.vs/
+.git/
+.github/
+*.user
+.env
+node_modules/

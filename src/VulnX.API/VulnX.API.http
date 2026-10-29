@@ -1,0 +1,59 @@
+@host = http://localhost:5080
+
+### 1. Health (should return Healthy when the database is reachable)
+GET {{host}}/api/health
+
+### 2. Register a normal user (run once; a second run returns 409 "already exists")
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "test@example.com",
+  "password": "Str0ng#Passw0rd"
+}
+
+### 3. Login as the normal user (run this BEFORE requests 4, 5 and 9)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Str0ng#Passw0rd"
+}
+
+### 4. Current user (send request 3 first)
+GET {{host}}/api/auth/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 5. Admin route as a normal user -> expect 403 (send request 3 first)
+GET {{host}}/api/admin/ping
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 6. Login as the seeded admin (use the email/password from your secrets.json)
+# @name adminLogin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Use-A-Strong#Pass1"
+}
+
+### 7. Admin route as admin -> expect 200 (send request 6 first)
+GET {{host}}/api/admin/ping
+Authorization: Bearer {{adminLogin.response.body.$.accessToken}}
+
+### 8. Forgot password (always returns 200)
+POST {{host}}/api/auth/forgot-password
+Content-Type: application/json
+
+{ "email": "test@example.com" }
+
+### 9. Update profile (send request 3 first)
+PUT {{host}}/api/users/profile
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "fullName": "Test User Updated" }

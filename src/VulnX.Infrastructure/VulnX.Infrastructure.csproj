@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.*" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.*" />
+    <PackageReference Include="MailKit" Version="4.*" />
+    <PackageReference Include="QuestPDF" Version="2025.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VulnX.Domain\VulnX.Domain.csproj" />
+    <ProjectReference Include="..\VulnX.Application\VulnX.Application.csproj" />
+    <ProjectReference Include="..\VulnX.Scanner\VulnX.Scanner.csproj" />
+  </ItemGroup>
+</Project>
+
+

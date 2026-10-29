@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VulnX.Domain/VulnX.Domain.csproj" />
+    <Project Path="src/VulnX.Application/VulnX.Application.csproj" />
+    <Project Path="src/VulnX.Infrastructure/VulnX.Infrastructure.csproj" />
+    <Project Path="src/VulnX.Scanner/VulnX.Scanner.csproj" />
+    <Project Path="src/VulnX.API/VulnX.API.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VulnX.Tests/VulnX.Tests.csproj" />
+  </Folder>
+</Solution>
