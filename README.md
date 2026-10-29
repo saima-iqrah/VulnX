@@ -1,164 +1,300 @@
-VulnX — AI-Assisted Web Vulnerability Assessment Platform
-VulnX is a web application for assessing common website security and configuration weaknesses. Users submit a website URL they own or are authorized to test, review evidence-based findings, understand risks through AI-assisted explanations, track scan history, and generate verifiable PDF reports.
-> **Authorized use only:** Scan only websites you own or have explicit permission to assess. VulnX uses low-impact HTTP checks and is not a penetration-testing tool.
-Features
-Authentication and access control — registration, login, role-based access, JWT access tokens, and refresh-token rotation.
-Safe target validation — URL normalization, authorization confirmation, SSRF protections, destination re-validation, request budgets, timeouts, and rate limits.
-Modular security checks — security headers, TLS/HTTPS, cookies, CORS, information disclosure, and HTML content checks.
-Background scanning — queued scans, cancellation, and live progress updates through SignalR.
-Evidence-based findings — findings include severity, confidence, evidence, impact, remediation guidance, and references.
-Security scoring — deterministic score from 0–100 and grade from A to F.
-Results and history — dashboards, filtering, sorting, scan history, score trends, and comparison between scans.
-AI assistant — explains findings and summarizes scans using stored scan data; a built-in fallback is available when the AI provider is not configured.
-Reports and exports — PDF reports with report numbers and verification codes, plus CSV/JSON exports.
-Notifications and administration — in-app notifications, user and scan management, platform settings, audit logs, and system health.
-Testing and CI — backend tests and a GitHub Actions workflow for automated checks.
-What VulnX Checks
-VulnX focuses on security configuration and hygiene, with checks grouped into six modules:
-Security headers
-TLS/HTTPS configuration
-Cookie security attributes
-CORS configuration
-Information disclosure
-HTML content, including mixed content and insecure forms
-The project specification describes 26 checks across these six modules. VulnX does not crawl a website or submit attack payloads, and it does not aim to detect issues such as SQL injection or cross-site scripting (XSS). A clean scan does not prove that a website is fully secure.
-Technology Stack
-Layer	Technology	Purpose
-Frontend	React 19, TypeScript, Vite 7, React Router 7	Single-page UI, dashboards, and navigation
-Backend	C#, ASP.NET Core Web API on .NET 10	API, application logic, and background processing
-Database	PostgreSQL	Persistent storage for users, scans, findings, reports, and logs
-ORM	Entity Framework Core 10, Npgsql	Database access and migrations
-Authentication	ASP.NET Core Identity, JWT	Account management, roles, and API authentication
-Real-time updates	ASP.NET Core SignalR	Live scan progress
-Scanner	Custom engine using `HttpClient`	Low-impact HTTP checks and target-safety controls
-PDF reports	QuestPDF	Report generation
-Email	MailKit / SMTP	Verification, reset, and alert emails when configured
-AI	Google Gemini API	Finding explanations, summaries, and chat
-Testing / CI	xUnit, Vitest, Testing Library, GitHub Actions	Automated tests and continuous integration
-Deployment	Docker, Docker Compose	Repeatable environment setup
-Architecture
-The backend is organized into five projects:
-`VulnX.Domain` — core entities and enumerations.
-`VulnX.Application` — interfaces, DTOs, and business rules such as score calculation.
-`VulnX.Infrastructure` — persistence, identity, email, AI integration, PDF generation, and background workers.
-`VulnX.Scanner` — scanner engine, modules, SSRF guard, and vulnerability catalog.
-`VulnX.API` — controllers, SignalR hub, middleware, and application startup.
-The React frontend communicates with the API over HTTP/HTTPS using JSON. SignalR provides live scan updates. PostgreSQL stores persistent application data.
-Requirements
-For local development, install:
-.NET SDK 10.x
-PostgreSQL 15 or later
-Node.js 20 or later and npm
-Visual Studio with the ASP.NET and web development workload (recommended on Windows), or a terminal-based development environment
-Git
-Getting Started
-1. Clone the repository
+# VulnX — AI-Assisted Web Vulnerability Assessment Platform
+
+VulnX is a web-based security assessment platform that helps users identify common web security misconfigurations in websites they own or are authorized to test. It performs low-impact automated security checks, generates vulnerability reports, calculates a security score, and uses AI to explain findings in an understandable way.
+
+## Features
+
+- **Automated Security Scanning:** Performs automated checks for common web security misconfigurations.
+- **Security Score:** Calculates a score from 0 to 100 and assigns a grade from A to F.
+- **AI-Powered Explanations:** Uses the Gemini API to explain security findings and provide remediation guidance.
+- **Scan History:** Stores previous scan results for future reference.
+- **Scan Comparison:** Compares results from different scans.
+- **Real-Time Progress:** Uses SignalR to provide scan progress updates.
+- **PDF Reports:** Generates downloadable PDF security reports.
+- **Data Export:** Supports CSV and JSON exports.
+- **Authentication and Authorization:** Uses ASP.NET Core Identity and JWT-based authentication.
+- **Admin Dashboard:** Includes administrative features and audit logging.
+- **Email Notifications:** Supports email configuration for notifications.
+- **Automated Testing and CI:** Includes test projects and a GitHub Actions workflow.
+- **Docker Support:** Includes Docker-related configuration and deployment documentation.
+
+## Security Checks
+
+VulnX focuses on six categories of common web security issues:
+
+| Category | What It Checks |
+|---|---|
+| Security Headers | Checks for missing or misconfigured security headers, such as Content-Security-Policy and Strict-Transport-Security. |
+| TLS/HTTPS | Checks HTTPS usage, HTTP-to-HTTPS redirection, and related transport-security configuration. |
+| Cookie Security | Checks cookie security attributes, including Secure, HttpOnly, and SameSite. |
+| CORS Configuration | Identifies potentially permissive Cross-Origin Resource Sharing configurations. |
+| Information Disclosure | Looks for exposed server information and unnecessary technical details. |
+| HTML Content | Checks for issues such as mixed content and insecure form configurations. |
+
+**Important:** VulnX is a lightweight security misconfiguration assessment tool, not a full penetration-testing solution. It does not perform comprehensive SQL injection or cross-site scripting exploitation.
+
+## Technology Stack
+
+### Frontend
+- React 19
+- TypeScript
+- Vite 7
+
+### Backend
+- ASP.NET Core Web API
+- C# and .NET 10
+- Entity Framework Core
+- ASP.NET Core Identity
+- JWT Authentication
+- SignalR
+- HttpClient
+
+### Database
+- PostgreSQL
+- Entity Framework Core Migrations
+- Database triggers, functions, and stored procedures
+
+### Additional Tools and Technologies
+- Gemini API
+- QuestPDF
+- MailKit
+- xUnit
+- Vitest
+- GitHub Actions
+- Docker
+
+## System Architecture
+
+VulnX follows a layered architecture to separate business logic, application services, infrastructure, scanning operations, and API endpoints.
+
+```text
+VulnX/
+├── src/
+│   ├── VulnX.Domain/
+│   ├── VulnX.Application/
+│   ├── VulnX.Infrastructure/
+│   ├── VulnX.Scanner/
+│   └── VulnX.API/
+├── tests/
+│   └── VulnX.Tests/
+├── frontend/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── VulnX.slnx
+└── DEPLOY.md
+```
+
+*Note: The structure above is a high-level overview. Actual files and folders may vary by repository version.*
+
+## How It Works
+
+1. The user registers or logs in to the platform.
+2. The user submits the URL of a website they own or are authorized to assess.
+3. VulnX validates the target and applies security restrictions.
+4. The background scanning process performs the supported security checks.
+5. Scan findings and supporting evidence are stored in the database.
+6. The platform calculates a security score and grade.
+7. AI-generated explanations help users understand findings and possible remediation steps.
+8. Users can review scan history, compare results, export data, and generate PDF reports.
+
+## Security Considerations
+
+VulnX includes safeguards intended to reduce the risk of misuse and unsafe scanning, including:
+
+- Blocking localhost and private-network targets.
+- URL and target validation.
+- DNS and redirect revalidation.
+- Request timeouts and request-budget limits.
+- Rate limiting.
+- Audit logging.
+- Secure refresh-token handling and rotation.
+- Hashed refresh-token storage.
+
+Only scan websites that you own or have explicit permission to test.
+
+## Prerequisites
+
+Before running VulnX locally, install:
+
+- .NET SDK 10
+- PostgreSQL 15 or later
+- Node.js 20 or later
+- npm
+- Visual Studio or another compatible code editor
+
+## Installation and Setup
+
+### 1. Clone the Repository
+
 ```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd <YOUR_REPOSITORY_FOLDER>
 ```
-Replace the placeholders with your actual repository URL and folder name.
-2. Create the PostgreSQL database
-Using pgAdmin Query Tool or `psql`, run:
+
+Replace the placeholders with your actual GitHub repository URL and folder name.
+
+### 2. Configure PostgreSQL
+
+Create a PostgreSQL user and database for the application.
+
+Example:
+
 ```sql
-CREATE USER vulnx_app WITH PASSWORD 'CHANGE_THIS_DB_PASSWORD';
+CREATE USER vulnx_app WITH PASSWORD 'YOUR_STRONG_PASSWORD';
 CREATE DATABASE vulnx_db OWNER vulnx_app;
 ```
-Use a strong local development password. Do not commit real credentials.
-3. Configure development secrets
-From the repository root, set the API's user secrets:
-```bash
-cd src/VulnX.API
 
-dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=vulnx_db;Username=vulnx_app;Password=CHANGE_THIS_DB_PASSWORD"
-dotnet user-secrets set "Jwt:Key" "REPLACE_WITH_A_RANDOM_SECRET_AT_LEAST_48_CHARACTERS_LONG"
+Use your own strong password instead of the example value.
+
+### 3. Configure Application Secrets
+
+Configure the following settings using .NET User Secrets:
+
+- `ConnectionStrings:Default`
+- `Jwt:Key`
+- `Seed:Enabled`
+- `Seed:AdminEmail`
+- `Seed:AdminPassword`
+
+Example commands, run from the API project directory:
+
+```bash
+dotnet user-secrets init
+
+dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=vulnx_db;Username=vulnx_app;Password=YOUR_STRONG_PASSWORD"
+
+dotnet user-secrets set "Jwt:Key" "YOUR_LONG_RANDOM_SECRET_KEY"
+
 dotnet user-secrets set "Seed:Enabled" "true"
-dotnet user-secrets set "Seed:AdminEmail" "admin@example.com"
-dotnet user-secrets set "Seed:AdminPassword" "REPLACE_WITH_A_STRONG_ADMIN_PASSWORD"
 
-cd ../..
+dotnet user-secrets set "Seed:AdminEmail" "admin@example.com"
+
+dotnet user-secrets set "Seed:AdminPassword" "YOUR_STRONG_ADMIN_PASSWORD"
 ```
-Generate a random JWT key in PowerShell:
-```powershell
-$b = New-Object byte[] 48
-[Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
-[Convert]::ToBase64String($b)
-```
-Use the generated value for `Jwt:Key`. Keep passwords, API keys, and connection strings out of source control.
-4. Restore, build, and run
-From the repository root:
+
+Use a sufficiently long, randomly generated JWT secret and a strong admin password. Keep real credentials out of source control.
+
+### 4. Run the Backend
+
+Open `VulnX.slnx` in Visual Studio and set `VulnX.API` as the startup project.
+
+Alternatively, run:
+
 ```bash
-dotnet restore VulnX.slnx
 dotnet build VulnX.slnx
+dotnet run --project src/VulnX.API --launch-profile http
 ```
-Install frontend dependencies:
+
+In development, the application is configured to apply existing Entity Framework Core migrations automatically.
+
+### 5. Run the Frontend
+
+Open a separate terminal:
+
 ```bash
 cd frontend
 npm install
-cd ..
+npm run dev
 ```
-The existing EF Core migrations are in `src/VulnX.Infrastructure/Persistence/Migrations`. Do not create the initial migration again. In Development, the API applies existing migrations on startup. Alternatively, apply them manually:
-```bash
-dotnet tool install --global dotnet-ef
-dotnet ef database update --project src/VulnX.Infrastructure --startup-project src/VulnX.API
-```
-Run the API using the HTTP launch profile:
-```bash
-dotnet run --project src/VulnX.API --launch-profile http
-```
-According to the current development configuration, the API is expected at `http://localhost:5080` and the Vite frontend at `http://localhost:5173`. Check the terminal output if the configured ports differ.
-Frontend: `http://localhost:5173`
-Health endpoint: `http://localhost:5080/api/health`
-You can also open `VulnX.slnx` in Visual Studio, set `VulnX.API` as the startup project, and press F5. The API's Development configuration starts the Vite development server.
-5. Optional integrations
-Google Gemini: Configure the relevant AI settings and API key using user secrets or environment variables. If no AI provider is configured, the built-in fallback can be used.
-SMTP email: Configure the `Smtp:*` settings to enable verification, password-reset, and alert emails. Without SMTP, development email links are exposed through the development-only flow described in the project documentation.
-Review `.env.example` and `DEPLOY.md` for the complete environment and deployment settings.
-Running Tests
-Backend tests:
+
+### 6. Open the Application
+
+After starting the backend and frontend, open:
+
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:5080
+- **Health Check:** http://localhost:5080/api/health
+
+The URLs assume the default local development configuration.
+
+## Running Tests
+
+### Backend Tests
+
+From the repository root:
+
 ```bash
 dotnet test tests/VulnX.Tests/VulnX.Tests.csproj
 ```
-Frontend tests (when frontend test files are present):
+
+### Frontend Tests
+
+From the frontend directory:
+
 ```bash
-cd frontend
 npm test
 ```
-GitHub Actions workflow: `.github/workflows/ci.yml`
-Security Notes
-Scan only targets for which you have explicit authorization.
-The scanner blocks unsafe local and private destinations and re-validates resolved addresses and redirects.
-Scan profiles have request and time budgets; rate limits restrict excessive use.
-Passwords are hashed by ASP.NET Core Identity.
-Access tokens are short-lived; refresh tokens are rotated and stored as hashes.
-Use HTTPS in production and store secrets in a secure secret manager or environment variables.
-AI explanations use selected scan data. Do not send results to an external AI provider if those results must remain private.
-The development email sender and development-only endpoints must not be treated as production email infrastructure.
-Troubleshooting
-Problem	Things to check
-Frontend opens but is blank	Run `npm install` inside `frontend/`; check the Vite terminal output.
-Scan progress does not update	Confirm the API is running and the frontend proxy for `/hubs` is configured correctly.
-`ConnectionStrings:Default` is missing	Set the API user secret or the corresponding production environment variable.
-JWT key is missing or too short	Configure a strong `Jwt:Key` secret.
-Database migration errors	Confirm the database is compatible with the current migrations; for an outdated local database, back up needed data and use a fresh development database if appropriate.
-`429 Too Many Requests`	A rate limit was reached; wait before retrying.
-Email is not sent	Check Admin → Settings → Email delivery and configure SMTP.
-Project Status
-The project documentation marks the main feature phases as implemented, including scanning, results, AI assistance, reporting, administration, and exports. Build and test the project in your own environment before relying on it; environment-specific compilation and deployment issues may still need to be resolved.
-Future Improvements
-Verify domain ownership before allowing scans.
-Add carefully scoped checks for outdated JavaScript libraries and exposed diagnostic pages.
-Add scheduled scans and email reports.
-Use an external job queue for multi-server deployments.
-Evaluate detection precision and recall against known test websites.
-References
-OWASP Top 10
-OWASP Web Security Testing Guide
-OWASP SSRF Prevention Cheat Sheet
-ASP.NET Core documentation
-Entity Framework Core documentation
-PostgreSQL documentation
-React documentation
-Google Gemini API documentation
+
+Run this command if the frontend test script is defined in `package.json`.
+
+## Configuration
+
+Optional integrations can be configured through environment variables, application settings, or User Secrets, as appropriate.
+
+- **Gemini API:** Configure the API key to enable AI-powered explanations.
+- **SMTP:** Configure the `Smtp:*` settings to enable email delivery.
+- **Database:** Configure `ConnectionStrings:Default`.
+- **JWT:** Configure `Jwt:Key`.
+- **Admin Seeding:** Configure the `Seed:*` settings.
+
+Check `.env.example` and the application configuration files for the supported setting names. Never commit real API keys, passwords, tokens, or production connection strings.
+
+## Troubleshooting
+
+| Problem | Possible Solution |
+|---|---|
+| Frontend dependencies are missing | Run `npm install` inside the `frontend` directory. |
+| Database connection fails | Verify PostgreSQL is running and check the connection string and credentials. |
+| JWT configuration error | Configure a valid `Jwt:Key` through User Secrets or the appropriate environment configuration. |
+| Database schema is outdated | Check the existing migrations and apply them using the project's configured migration workflow. |
+| Scan requests are rate-limited | Wait before retrying and check the application's rate-limit configuration. |
+| Email is not delivered | Verify SMTP settings and credentials. |
+| Real-time progress is unavailable | Check that the API is running and that the SignalR connection is working. |
+
+## Project Status
+
+VulnX includes the following implemented areas, according to the project development documentation:
+
+- User authentication and dashboards
+- Background security scanning
+- SSRF-related protections
+- Real-time scan progress
+- Findings and security scoring
+- Scan history and comparison
+- AI-assisted explanations
+- PDF report generation
+- Administrative and audit features
+- CSV and JSON export
+- Test and CI configuration
+- Docker and deployment documentation
+
+Scheduled scanning is not currently implemented. Check the repository for the latest implementation status before relying on any feature.
+
+## Future Improvements
+
+Potential future enhancements include:
+
+- Scheduled and recurring scans
+- Expanded security checks
+- More comprehensive testing
+- Improved reporting and visual analytics
+- Additional deployment and monitoring options
+
+## Responsible Use
+
+VulnX is intended for authorized security assessment and educational purposes. Users are responsible for ensuring that they have permission to assess any submitted website. The platform's results should be treated as indicators of potential security issues, not as a guarantee that a website is secure or insecure.
+
+## License
+
+No license is specified here. Add a `LICENSE` file and update this section if you intend to distribute the project under a particular open-source license.
+
+## Author
+
+**Saima Kawsar**
+
+GitHub: [saima-iqrah](https://github.com/saima-iqrah)
+
 ---
-VulnX — Understand web security findings, prioritize fixes, and generate evidence-based reports.
+
+If you find this project useful, consider giving the repository a star on GitHub.
