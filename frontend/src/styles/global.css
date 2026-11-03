@@ -1227,3 +1227,190 @@ textarea.input {
 .auth-nav { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .auth-nav a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 600 14px var(--font); text-decoration: none; }
 .auth-nav a:hover { background: var(--panel2); }
+
+/* ===== Auth split layout (components/AuthShell.tsx) ===== */
+.av-stage {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 84px 20px 40px;
+    overflow-x: hidden;
+    background:
+        radial-gradient(900px 520px at 12% -10%, rgba(79, 140, 255, .18), transparent 60%),
+        radial-gradient(800px 480px at 96% 112%, rgba(56, 232, 198, .13), transparent 60%),
+        var(--bg);
+}
+.av-stage.av-admin {
+    background:
+        radial-gradient(900px 520px at 12% -10%, rgba(255, 184, 77, .16), transparent 60%),
+        radial-gradient(800px 480px at 96% 112%, rgba(79, 140, 255, .10), transparent 60%),
+        var(--bg);
+}
+
+.av-nav {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.av-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+.av-home:hover { text-decoration: none; background: var(--panel2); }
+
+.av-card {
+    width: min(980px, 100%);
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
+    animation: av-rise .55s cubic-bezier(.2, .8, .2, 1) both;
+}
+/* the coloured panel sits on the side opposite to the form, like a sliding overlay */
+.av-card--right .av-overlay { order: 2; animation: av-in-right .6s cubic-bezier(.2, .8, .2, 1) both; }
+.av-card--right .av-pane { order: 1; }
+.av-card--left .av-overlay { order: 1; animation: av-in-left .6s cubic-bezier(.2, .8, .2, 1) both; }
+.av-card--left .av-pane { order: 2; }
+
+/* ---- coloured overlay panel ---- */
+.av-overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 44px;
+    color: #fff;
+    overflow: hidden;
+    background: linear-gradient(150deg, #0a2f55 0%, #2456c9 52%, #26c9b0 120%);
+}
+.av-admin .av-overlay { background: linear-gradient(150deg, #2c1d06 0%, #a8630f 55%, #ffb84d 122%); }
+.av-overlay::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -110px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .24), rgba(255, 255, 255, 0) 66%);
+}
+.av-overlay::after {
+    content: '';
+    position: absolute;
+    bottom: -90px;
+    left: -80px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, .18);
+    box-shadow: 0 0 0 38px rgba(255, 255, 255, .04), 0 0 0 80px rgba(255, 255, 255, .03);
+}
+.av-overlay > * { position: relative; z-index: 1; }
+
+.av-brand { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 700; letter-spacing: -.02em; }
+.av-brand b { color: #c9fff2; }
+.av-admin .av-brand b { color: #ffe2b0; }
+
+.av-overlay-body h2 { font-size: 36px; line-height: 1.08; letter-spacing: -.03em; margin-bottom: 14px; }
+.av-overlay-body p { max-width: 34ch; margin-bottom: 26px; color: rgba(255, 255, 255, .88); }
+
+.av-ghost {
+    display: inline-block;
+    padding: 11px 30px;
+    border: 1.5px solid rgba(255, 255, 255, .85);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    transition: background .2s, color .2s, transform .2s;
+}
+.av-ghost:hover { text-decoration: none; background: #fff; color: #0a2f55; transform: translateY(-1px); }
+.av-admin .av-ghost:hover { color: #5a3504; }
+
+.av-points { list-style: none; margin: 30px 0 0; padding: 0; display: grid; gap: 10px; font-size: 14px; color: rgba(255, 255, 255, .92); }
+.av-points li { display: flex; align-items: center; gap: 10px; }
+.av-points svg { flex: none; padding: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(255, 255, 255, .18); }
+.av-overlay-foot { font-size: 12px; letter-spacing: .04em; color: rgba(255, 255, 255, .7); }
+
+/* ---- form side ---- */
+.av-pane {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 44px 52px;
+    animation: av-fade-up .55s .12s cubic-bezier(.2, .8, .2, 1) both;
+}
+.av-mlogo { display: none; margin-bottom: 18px; }
+.av-head h1 { font-size: 30px; letter-spacing: -.03em; margin-bottom: 6px; }
+.av-head p { margin-bottom: 22px; }
+.av-pane .input { border-radius: 12px; padding: 13px 14px; }
+.av-footer { margin-top: 18px; text-align: center; font-size: 14px; color: var(--muted); }
+
+/* User / Admin switch: the admin tab is always highlighted in amber */
+.av-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 26px;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel2);
+}
+.av-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background .2s, color .2s, box-shadow .2s;
+}
+.av-tab:hover { text-decoration: none; color: var(--text); }
+.av-tab.is-active { color: #06201b; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: 0 6px 18px rgba(56, 232, 198, .25); }
+.av-tab.is-admin:not(.is-active) { color: var(--warn); }
+.av-tab.is-admin:not(.is-active):hover { background: rgba(255, 184, 77, .10); }
+.av-tab.is-admin.is-active { color: #2b1600; background: linear-gradient(135deg, #ffcf7a, #ff9a3d); box-shadow: 0 6px 18px rgba(255, 184, 77, .30); }
+
+@keyframes av-rise { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+@keyframes av-fade-up { from { opacity: 0; transform: translateY(10px); } }
+@keyframes av-in-left { from { opacity: 0; transform: translateX(-34px); } }
+@keyframes av-in-right { from { opacity: 0; transform: translateX(34px); } }
+
+:root[data-theme='light'] .av-card { box-shadow: 0 24px 60px rgba(26, 45, 90, .15); }
+:root[data-theme='light'] .av-pane .input { background: #ffffff; }
+:root[data-theme='light'] .av-tab.is-admin:not(.is-active) { color: #b45f06; }
+
+@media (max-width: 860px) {
+    .av-stage { padding: 76px 14px 28px; }
+    .av-card { grid-template-columns: 1fr; min-height: 0; }
+    .av-overlay { display: none; }
+    .av-pane { padding: 30px 22px; }
+    .av-mlogo { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .av-card, .av-pane, .av-overlay { animation: none; }
+}
